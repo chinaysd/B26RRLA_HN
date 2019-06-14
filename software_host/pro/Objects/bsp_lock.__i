@@ -1,0 +1,1 @@
+"..\bsp\bsp_lock.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_lock.lst) TABS (7) OBJECT(.\Objects\bsp_lock.obj)

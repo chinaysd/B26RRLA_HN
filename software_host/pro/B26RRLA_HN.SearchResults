@@ -1,0 +1,4 @@
+---- Rev_Byte Matches (3 in 2 files) ----
+bsp_uart.c (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):unsigned char Rev_Byte(void)
+bsp_uart.c (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):	Rev_Data = Rev_Byte();
+bsp_uart.h (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):char Rev_Byte(void);

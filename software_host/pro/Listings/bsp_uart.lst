@@ -1,0 +1,275 @@
+C51 COMPILER V9.59.0.0   BSP_UART                                                          06/14/2019 09:16:02 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_UART
+OBJECT MODULE PLACED IN .\Objects\bsp_uart.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_uart.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;.
+                    -.\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_uart.lst) TABS(7) OBJECT(.\Objects\bsp_uart.obj)
+
+line level    source
+
+   1          #include "bsp_uart.h"
+   2          
+   3          bit UartSendFlag = 0; //发送中断标志位
+   4          bit UartReceiveFlag = 0; //接收中断标志位
+   5          bit Uart1SendFlag;
+   6          bit Uart1ReceiveFlag;
+   7          
+   8          static unsigned int RevMyDataValue;
+   9          
+  10          void Uart_Init(char Freq,unsigned int baud)
+  11          {
+  12   1             P1CON &= 0xF3;   //TX/RX设置为输入带上拉
+  13   1             P1PH  |= 0x0C;
+  14   1             
+  15   1             SCON  |= 0X50;   //设置通信方式为模式一，允许接收
+  16   1             TMCON |= 0X02;
+  17   1             TMOD  |= 0X20;
+  18   1             PCON  |= 0X80;       //SMOD=1
+  19   1             TH1 = (Freq*1000000/baud)>>8;        //波特率为T1的溢出时间；
+  20   1             TL1 = Freq*1000000/baud;
+  21   1             TR1 = 0;
+  22   1             ET1 = 0;      
+  23   1             EUART = 1;     //开启Uart0中断
+  24   1      }
+  25          
+  26          void Uart1_Init(char Uart1_Freq,unsigned int Uart1_Baud)
+  27          {
+  28   1             P2CON &= 0xFC;   //TX/RX设置为输入带上拉
+  29   1             P2PH  |= 0x03;
+  30   1             OTCON = 0xC0;    //串行接口SSI选择Uart1通信
+  31   1             SSCON0 = 0x50;   //设置通信方式为模式一，允许接收
+  32   1             SSCON1 = Uart1_Freq*1000000/Uart1_Baud;   //波特率低位控制
+  33   1             SSCON2 = (Uart1_Freq*1000000/Uart1_Baud)>>8;   //波特率高位控制
+  34   1             IE1 = 0x01;      //开启SSI中断
+  35   1      }
+  36          
+  37          
+  38          /***********************************串口0处理函数***************************************************/
+  39          static void UART0_TX_byte(unsigned char Test1Data)
+  40          {
+  41   1         SBUF = Test1Data;
+  42   1         while(!UartSendFlag);
+  43   1         UartSendFlag = 0;
+  44   1      }
+  45          
+  46          static unsigned char Uart0_SendData(UART0_PROTOCOL_TX *p)
+  47          {
+  48   1             static unsigned char i;
+  49   1             for(i = 0; i < UART0_BUF_SIZE;i ++)
+  50   1             {
+  51   2                    UART0_TX_byte(p->Uart0_Buf[i]);
+  52   2             }
+  53   1             return 0;
+  54   1      }
+C51 COMPILER V9.59.0.0   BSP_UART                                                          06/14/2019 09:16:02 PAGE 2   
+
+  55          
+  56          unsigned char Uart0_ProtocolSend(unsigned char addr1,unsigned char id1,unsigned int uart0data)
+  57          {
+  58   1             UART0_PROTOCOL_TX Uart0_buf;
+  59   1             memset(&Uart0_buf,0,sizeof(Uart0_buf));
+  60   1             Uart0_buf.Uart0_Format.ADDR1 = addr1;
+  61   1             Uart0_buf.Uart0_Format.ID1      = id1; 
+  62   1             Uart0_buf.Uart0_Format.DATA1  = UART0_Hight(uart0data);
+  63   1             Uart0_buf.Uart0_Format.DATA2  = UART0_Low(uart0data);
+  64   1             Uart0_buf.Uart0_Format.CHECKSUM1 = (unsigned char)(Uart0_buf.Uart0_Format.ADDR1+Uart0_buf.Uart0_Format.ID
+             -1+Uart0_buf.Uart0_Format.DATA1+Uart0_buf.Uart0_Format.DATA2);
+  65   1             Uart0_buf.Uart0_Format.STOP1 = 0x0d;
+  66   1             Uart0_buf.Uart0_Format.STOP2 = 0x0a;
+  67   1             return Uart0_SendData(&Uart0_buf);
+  68   1      }
+  69          /***********************************串口0处理函数***************************************************/
+  70          
+  71          /***********************************串口1处理函数***************************************************/
+  72          
+  73          static void Uart1_SendByte(char SendByte)
+  74          {
+  75   1             SSDAT = SendByte;
+  76   1             while(!Uart1SendFlag);
+  77   1             Uart1SendFlag = 0;
+  78   1      }
+  79          
+  80          static char Uart1_SendData(UART1_PROTOCOL_TX *p)
+  81          {
+  82   1             static char i;
+  83   1             for(i = 0; i < UART1_BUF_SIZE; i ++)
+  84   1             {
+  85   2                    Uart1_SendByte(p->Uart1_Buf[i]);
+  86   2             }
+  87   1             return 0;
+  88   1      }
+  89          
+  90          unsigned char Uart1_ProtocolSendData(unsigned char TX1_ADDR,unsigned char TX1_ID,unsigned int TX1_DATA)
+  91          {
+  92   1             UART1_PROTOCOL_TX Uart1_buf;
+  93   1             memset(&Uart1_buf,0,sizeof(Uart1_buf));
+  94   1             Uart1_buf.Uart1_Format.UART1_ADDR = TX1_ADDR;
+  95   1             Uart1_buf.Uart1_Format.UART1_ID = TX1_ID;
+  96   1             Uart1_buf.Uart1_Format.UART1_DATA1 = UART1_Hight(TX1_DATA);
+  97   1             Uart1_buf.Uart1_Format.UART1_DATA2 = UART1_Low(TX1_DATA);
+  98   1             Uart1_buf.Uart1_Format.UART1_CHECKSUM = (unsigned char)(Uart1_buf.Uart1_Format.UART1_ADDR+Uart1_buf.Uart1
+             -_Format.UART1_ID+Uart1_buf.Uart1_Format.UART1_DATA1+Uart1_buf.Uart1_Format.UART1_DATA2);
+  99   1             Uart1_buf.Uart1_Format.UART1_STOP1 = 0x0d;
+ 100   1             Uart1_buf.Uart1_Format.UART1_STOP2 = 0x0a;
+ 101   1             return Uart1_SendData(&Uart1_buf);
+ 102   1      }
+ 103          /***********************************串口1处理函数***************************************************/
+ 104          
+ 105          /***********************************串口1接收处理函数***************************************************/
+ 106          unsigned char Rev_Num,Rev_Sum,Rev_Data,Rev_String[UART1_REVBUF_SIZE];
+ 107          
+ 108          static char IfRevSuccess(void)
+ 109          {
+ 110   1             if(Rev_Num & 0x80)
+ 111   1             {
+ 112   2                    Rev_Num = 0x00;
+ 113   2                    return 1;
+ 114   2             }
+C51 COMPILER V9.59.0.0   BSP_UART                                                          06/14/2019 09:16:02 PAGE 3   
+
+ 115   1             else
+ 116   1             {
+ 117   2                    return 0;
+ 118   2             }
+ 119   1      }
+ 120          
+ 121          static char Rev_Byte(void)
+ 122          {
+ 123   1             static char RevTempByte;
+ 124   1             while(!Uart1ReceiveFlag);
+ 125   1             Uart1ReceiveFlag = 0;
+ 126   1             RevTempByte = SSDAT;
+ 127   1             return RevTempByte;
+ 128   1      }
+ 129          
+ 130          static void RevProcessHandle(void)
+ 131          {
+ 132   1             Rev_Data = Rev_Byte();
+ 133   1             if((Rev_Num & 0x80) == 0x00)
+ 134   1             {
+ 135   2                    if(Rev_Num == 0x40)
+ 136   2                    {
+ 137   3                           if(Rev_Data == 0x0a)
+ 138   3                           {
+ 139   4                                  Rev_Num = 0x80;
+ 140   4                           }
+ 141   3                           else
+ 142   3                           {
+ 143   4                                  Rev_Num = 0x00;
+ 144   4                           }
+ 145   3                    }
+ 146   2                    else
+ 147   2                    {
+ 148   3                 if(Rev_Data == 0x0d)
+ 149   3                 {
+ 150   4                    Rev_Num = 0x40;
+ 151   4                       }
+ 152   3                       else
+ 153   3                       {
+ 154   4                             Rev_String[Rev_Num] = Rev_Data;
+ 155   4                             Rev_Num ++;
+ 156   4                             if(Rev_String[0] != 0xfa)
+ 157   4                             {
+ 158   5                                  Rev_Num = 0;
+ 159   5                             }
+ 160   4                             #if 1
+ 161   4                             if(Rev_Num > UART1_REVBUF_SIZE)
+ 162   4                             {
+ 163   5                                  Rev_Num = 0;
+ 164   5                             }
+ 165   4                             #endif
+ 166   4                       }
+ 167   3                    }
+ 168   2             }
+ 169   1      }
+ 170          
+ 171          void RevDataHandle(void)
+ 172          {
+ 173   1             if(IfRevSuccess())
+ 174   1             {
+ 175   2                    RevMyDataValue = (unsigned int)Get32Bit(Rev_String[2],Rev_String[3]);
+ 176   2                    memset(&Rev_String,0,sizeof(Rev_String));
+C51 COMPILER V9.59.0.0   BSP_UART                                                          06/14/2019 09:16:02 PAGE 4   
+
+ 177   2                    switch (RevMyDataValue)
+ 178   2                    {
+ 179   3                           case ExtiLedOpenData:
+ 180   3                                  RevDataFootLedOpen();
+ 181   3                                  break;
+ 182   3                           case ExtiLedCloseData:
+ 183   3                                  RevDataFootLedClose();
+ 184   3                                  break;
+ 185   3                           default:
+ 186   3                                  
+ 187   3                                  break;
+ 188   3                    }
+ 189   2             }
+ 190   1      }
+ 191          /***********************************串口1接收处理函数***************************************************/
+ 192          
+ 193          
+ 194          
+ 195          
+ 196          /*****************************************************
+ 197          *函数名称：void UartInt(void) interrupt 4
+ 198          *函数功能：Uart0中断函数
+ 199          *入口参数：void
+ 200          *出口参数：void
+ 201          *****************************************************/
+ 202          void UartInt(void) interrupt 4
+ 203          {
+ 204   1             if(TI)
+ 205   1             {
+ 206   2                    TI = 0;       
+ 207   2                    UartSendFlag = 1;           
+ 208   2             }
+ 209   1             if(RI)
+ 210   1             {
+ 211   2                    RI = 0;       
+ 212   2                    UartReceiveFlag = 1;
+ 213   2             }      
+ 214   1      }
+ 215          
+ 216          /******************************************************************************
+ 217          *作者:PETER
+ 218          *日期:190308
+ 219          *描述:串口1中断处理函数
+ 220          *返回:无
+ 221          *******************************************************************************/
+ 222          void Uart1_Int() interrupt 7   //Uart1中断函数
+ 223          {
+ 224   1             if(SSCON0&0x02)    //发送标志位判断
+ 225   1             {
+ 226   2                    SSCON0 &= 0xFD;
+ 227   2                    Uart1SendFlag = 1;
+ 228   2             }
+ 229   1             if((SSCON0&0x01))  //接收标志位判断
+ 230   1             {
+ 231   2                    SSCON0 &= 0xFE;
+ 232   2                    Uart1ReceiveFlag = 1;
+ 233   2                    RevProcessHandle();
+ 234   2             }
+ 235   1      }
+ 236          
+ 237          
+ 238          
+C51 COMPILER V9.59.0.0   BSP_UART                                                          06/14/2019 09:16:02 PAGE 5   
+
+ 239          
+ 240          
+ 241          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    683    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     15      34
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      4    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

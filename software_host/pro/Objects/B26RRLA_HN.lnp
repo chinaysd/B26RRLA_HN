@@ -1,0 +1,16 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\system.obj",
+".\Objects\bsp_interrupt.obj",
+".\Objects\bsp_lock.obj",
+".\Objects\bsp_timer.obj",
+".\Objects\bsp_uart.obj",
+".\Objects\bsp_wdt.obj",
+".\Objects\bsp_key.obj",
+".\Objects\bsp_pwm.obj",
+".\Objects\bsp_cup.obj",
+"..\lib\SC92F8X6XB_HighSensitive_Lib_T1_V1.2.0.LIB",
+".\Objects\S_TouchKeyCFG.obj",
+".\Objects\TimeOut.obj" 
+TO ".\Objects\B26RRLA_HN" 
+PRINT(".\Listings\B26RRLA_HN.m51") RAMSIZE(256) 

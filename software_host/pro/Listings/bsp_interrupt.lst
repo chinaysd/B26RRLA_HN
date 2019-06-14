@@ -1,0 +1,46 @@
+C51 COMPILER V9.59.0.0   BSP_INTERRUPT                                                     06/13/2019 21:12:51 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_INTERRUPT
+OBJECT MODULE PLACED IN .\Objects\bsp_interrupt.obj
+COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_interrupt.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\Time
+                    -Out;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_interrupt.lst) TABS(7) OBJECT(.\Objects\bsp_interrupt.obj)
+
+line level    source
+
+   1          #include "bsp_interrupt.h"
+   2          
+   3          
+   4          char Interrupt_Handle(char Interrupt_Status)
+   5          {
+   6   1             if(Interrupt_Status > Interrupt_Enable){
+   7   2          return Interrupt_Default;
+   8   2             }else if(Interrupt_Status == Interrupt_Enable){
+   9   2             EA = Interrupt_Open;
+  10   2          return Interrupt_Open;
+  11   2             }else if(Interrupt_Status == Interrupt_Disable){
+  12   2             EA = Interrupt_Close;
+  13   2          return Interrupt_Close;
+  14   2             }
+  15   1      }
+  16          
+  17          
+  18          
+  19          
+  20          
+  21          
+*** WARNING C291 IN LINE 15 OF ..\bsp\bsp_interrupt.c: not every exit path returns a value
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     42    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
