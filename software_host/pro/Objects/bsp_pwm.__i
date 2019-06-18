@@ -1,0 +1,1 @@
+"..\bsp\bsp_pwm.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_pwm.lst) TABS (7) OBJECT(.\Objects\bsp_pwm.obj)

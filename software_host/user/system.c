@@ -24,8 +24,8 @@ void System_Init(void)
 	TK_Init();
 	Pwm_Init();
 	Timer_Init();
-	Uart_Init(Freq_2M,Baud_9600);
-	Uart1_Init(Freq_2M,Baud_9600);
+	Uart_Init(Freq_6M,Baud_9600);
+	Uart1_Init(Freq_6M,Baud_9600);
 	TouchKeyInit();
 	WDT_ENABLE();
 	Interrupt_Handle(Interrupt_Enable);

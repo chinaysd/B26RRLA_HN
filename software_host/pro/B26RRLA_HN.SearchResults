@@ -1,4 +1,4 @@
----- Rev_Byte Matches (3 in 2 files) ----
-bsp_uart.c (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):unsigned char Rev_Byte(void)
-bsp_uart.c (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):	Rev_Data = Rev_Byte();
-bsp_uart.h (C:\Users\Administrator\Desktop\B26RRLA_HN\software_host\bsp):char Rev_Byte(void);
+---- PwmHandle Matches (3 in 3 files) ----
+bsp_key.c (F:\共享文件\语音项目\git受控文件\B26RRLA_HN\software_host\bsp):				  PwmHandle();
+bsp_pwm.c (F:\共享文件\语音项目\git受控文件\B26RRLA_HN\software_host\bsp):void PwmHandle(void)
+bsp_pwm.h (F:\共享文件\语音项目\git受控文件\B26RRLA_HN\software_host\bsp):void PwmHandle(void);

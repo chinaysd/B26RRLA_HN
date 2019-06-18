@@ -10,7 +10,7 @@
 #include "bsp_lock.h"
 
 
-#define    OneLineTime     50     //50ms
+#define    OneLineTime     100     //50ms
 
 
 #define NON_VALUE      0X00000000

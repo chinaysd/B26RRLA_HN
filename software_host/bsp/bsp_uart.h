@@ -7,7 +7,7 @@
 #include "string.h"
 #include "bsp_key.h"
 
-#define  Freq_2M           2
+#define  Freq_6M           6
 #define  Baud_9600         9600
 
 /***************************串口0变量的定义*********************************/

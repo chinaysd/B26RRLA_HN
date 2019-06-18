@@ -170,6 +170,7 @@ static void RevProcessHandle(void)
 
 void RevDataHandle(void)
 {
+	static char RevLedOpenFlag,RevLedCloseFlag;
 	if(IfRevSuccess())
 	{
 		RevMyDataValue = (unsigned int)Get32Bit(Rev_String[2],Rev_String[3]);
@@ -177,13 +178,22 @@ void RevDataHandle(void)
 		switch (RevMyDataValue)
 		{
 			case ExtiLedOpenData:
-				RevDataFootLedOpen();
+				if(!RevLedOpenFlag){
+                    RevLedOpenFlag = 1;
+					RevLedCloseFlag = 0;
+					RevDataFootLedOpen();
+				}
 				break;
 			case ExtiLedCloseData:
-				RevDataFootLedClose();
+				if(!RevLedCloseFlag){
+                    RevLedCloseFlag = 1;
+					RevLedOpenFlag = 0;
+					RevDataFootLedClose();
+				}
 				break;
 			default:
-				
+				RevLedCloseFlag = 0;
+				RevLedOpenFlag = 0;
 				break;
 		}
 	}

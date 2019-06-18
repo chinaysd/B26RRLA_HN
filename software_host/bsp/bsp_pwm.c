@@ -31,12 +31,3 @@ void ErrorPwmProcessHandle(void)
 }
 
 
-void PwmHandle(void)
-{
-	if(count_level == 15){
-      count_level = 100;
-	}else if(count_level == 100){
-      count_level = 15;
-	}
-}
-

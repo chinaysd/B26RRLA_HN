@@ -15,7 +15,6 @@
 
 void Pwm_Init(void);
 void ErrorPwmProcessHandle(void);
-void PwmHandle(void);
 
 
 #endif

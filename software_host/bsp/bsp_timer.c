@@ -8,8 +8,8 @@ void Timer_Init(void)
 	
 	//T0设置
 	TMOD |= 0x01;                 //0000 0001;Timer0设置工作方式1
-	TL0 = (65536 - 1000)%256;    //溢出时间：时钟为Fsys，则24000*（1/Fsys）=2ms;
-	TH0 = (65536 - 1000)/256;
+	TL0 = (65536 - 2500)%256;    //溢出时间：时钟为Fsys，则24000*（1/Fsys）=2ms;
+	TH0 = (65536 - 2500)/256;
 	TR0 = 0;
 	ET0 = 1;//定时器0允许
 	TR0 = 1;//打开定时器0
@@ -40,23 +40,11 @@ void Timer_Init(void)
 **************************************************/
 void timer0() interrupt 1        //250us
 {
-	//static char Cnts;
-    TL0 = (65536 - 1000)%256;
-	TH0 = (65536 - 1000)/256;
+    TL0 = (65536 - 2500)%256;
+	TH0 = (65536 - 2500)/256;
 	TimeOutDet_DecHandle();
 	CupProcessHandle();
     LockHandle();
-	#if 0
-	++ Cnts;
-	if(Cnts & 0x01)
-	{
-		LockRedSet(1);
-	}
-	else
-	{
-		LockRedSet(0);
-	}
-	#endif
 }
 
 void timer1() interrupt 3
@@ -66,10 +54,22 @@ void timer1() interrupt 3
 
 void Timer2Int(void) interrupt 5       //400US
 {	
+	//static char Cnts;
 	TF2 = 0;   //溢出清零
 	#if 1 
 	ErrorPwmProcessHandle();
 	#endif
+#if 0
+	++ Cnts;
+	if(Cnts & 0x01)
+	{
+		LockRedSet(1);
+	}
+	else
+	{
+		LockRedSet(0);
+	}
+#endif
 }
 
 

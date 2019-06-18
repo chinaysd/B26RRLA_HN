@@ -9,20 +9,28 @@ TIMEOUT_PARA TimeOut_Para[2];
 
 extern char count_level;
 
-char FootLedTempCnts;
+char FootLedTempCnts,FoolLedFlag;
 
 void RevDataFootLedOpen(void)
 {
-	KEYTempVALUE = NON_VALUE;
-	TX0SendData = LedOpenData;	//往下发的指令
-    count_level = 100;
+	if(count_level == 15){
+      KEYTempVALUE = NON_VALUE;
+	  TX0SendData = LedOpenData;	//往下发的指令
+	  TX1SendData = ExtiLedOpenData;
+	  FoolLedFlag = 1;
+      count_level = 100;
+	}
 }
 
 void RevDataFootLedClose(void)
 {
-	KEYTempVALUE = NON_VALUE;
-	TX0SendData = LedCloseData;	//往下发的指令
-	count_level = 15;
+	if(count_level == 100){
+       KEYTempVALUE = NON_VALUE;
+	   TX0SendData = LedCloseData;	//往下发的指令
+	   TX1SendData = ExtiLedCloseData;
+	   FoolLedFlag = 1;
+	   count_level = 15;
+	}
 }
 
 void KeyDataOnLineSend(void)
@@ -46,17 +54,24 @@ void Key_Handle(void)
 			case TK1_VALUE:
 				if((KEYTempVALUE != TK1_VALUE)&&(Lock_Para_t.LockFlag)){
                   KEYTempVALUE = TK1_VALUE;
+				  FoolLedFlag = 1;
 				  ++ FootLedTempCnts;
 				  if(FootLedTempCnts & 0x01){
-				  	TX0SendData = LedOpenData;
-					TX1SendData = ExtiLedOpenData;
+				  	if(15 == count_level){
+                       TX0SendData = LedOpenData;
+					   TX1SendData = ExtiLedOpenData;
+					   count_level = 100;
+					}
 				  }
 				  else{
-				  	TX0SendData = LedCloseData;
-					TX1SendData = ExtiLedCloseData;
+				  	if(100 == count_level){
+                       TX0SendData = LedCloseData;
+					   TX1SendData = ExtiLedCloseData;
+					   count_level = 15;
+					}
 				  }
-				  PwmHandle();
 				}
+				
 				break;
 			case TK2_VALUE:
 				if((KEYTempVALUE != TK2_VALUE)&&(Lock_Para_t.LockFlag)){
@@ -68,12 +83,14 @@ void Key_Handle(void)
 				if((KEYTempVALUE != TK3_VALUE)&&(Lock_Para_t.LockFlag)){
 				  KEYTempVALUE = TK3_VALUE;
 				  TX0SendData = HeadUpData;
+				  FoolLedFlag = 0;
 				}
 				break;
 			case TK4_VALUE:
 				if((KEYTempVALUE != TK4_VALUE)&&(Lock_Para_t.LockFlag)){
 				  KEYTempVALUE = TK4_VALUE;
 				  TX0SendData = HomeData;
+				  FoolLedFlag = 0;
 				}
 				break;
 			case TK5_VALUE:
@@ -86,18 +103,21 @@ void Key_Handle(void)
 				if((KEYTempVALUE != TK6_VALUE)&&(Lock_Para_t.LockFlag)){
 				  KEYTempVALUE = TK6_VALUE;
 				  TX0SendData = OpenData;
+				  FoolLedFlag = 0;
 				}
 				break;
 			case TK7_VALUE:
 				if((KEYTempVALUE != TK7_VALUE)&&(Lock_Para_t.LockFlag)){
 				  KEYTempVALUE = TK7_VALUE;
 				  TX0SendData = CloseData;
+				  FoolLedFlag = 0;
 				}
 				break;
 			case TK8_VALUE:
 				if((KEYTempVALUE != TK8_VALUE)&&(Lock_Para_t.LockFlag)){
 				  KEYTempVALUE = TK8_VALUE;
 				  TX0SendData = HeadDownData;
+				  FoolLedFlag = 0;
 				}
 				break;
 				#if 0
@@ -109,13 +129,17 @@ void Key_Handle(void)
 			default:
 				if(KEYTempVALUE != NON_VALUE){
 				  KEYTempVALUE = NON_VALUE;
-				  TX0SendData = NoData;
+				  if(!FoolLedFlag){
+                     TX0SendData = NoData;
+				  }
 				}
 				break;
 		}
 		TouchKeyRestart();// 启动下一轮转换
 	}
-	RevDataHandle();
+	if(KEYTempVALUE == NON_VALUE){
+       RevDataHandle();
+	}
 	KeyDataOnLineSend();
 }
 

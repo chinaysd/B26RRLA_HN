@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   SYSTEM                                                            06/18/2019 14:18:47 PAGE 1   
+C51 COMPILER V9.59.0.0   SYSTEM                                                            06/18/2019 19:41:21 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
@@ -34,8 +34,8 @@ line level    source
   24   1             TK_Init();
   25   1             Pwm_Init();
   26   1             Timer_Init();
-  27   1             Uart_Init(Freq_2M,Baud_9600);
-  28   1             Uart1_Init(Freq_2M,Baud_9600);
+  27   1             Uart_Init(Freq_6M,Baud_9600);
+  28   1             Uart1_Init(Freq_6M,Baud_9600);
   29   1             TouchKeyInit();
   30   1             WDT_ENABLE();
   31   1             Interrupt_Handle(Interrupt_Enable);

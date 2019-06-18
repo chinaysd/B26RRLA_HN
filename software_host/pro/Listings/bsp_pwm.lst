@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   BSP_PWM                                                           06/18/2019 11:46:08 PAGE 1   
+C51 COMPILER V9.59.0.0   BSP_PWM                                                           06/18/2019 19:41:22 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_PWM
@@ -41,19 +41,10 @@ line level    source
   31   1      }
   32          
   33          
-  34          void PwmHandle(void)
-  35          {
-  36   1             if(count_level == 15){
-  37   2            count_level = 100;
-  38   2             }else if(count_level == 100){
-  39   2            count_level = 15;
-  40   2             }
-  41   1      }
-  42          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     79    ----
+   CODE SIZE        =     52    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

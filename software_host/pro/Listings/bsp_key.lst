@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 14:16:38 PAGE 1   
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 20:14:35 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_KEY
@@ -19,133 +19,157 @@ line level    source
    9          
   10          extern char count_level;
   11          
-  12          char FootLedTempCnts;
+  12          char FootLedTempCnts,FoolLedFlag;
   13          
   14          void RevDataFootLedOpen(void)
   15          {
-  16   1             KEYTempVALUE = NON_VALUE;
-  17   1             TX0SendData = LedOpenData;  //往下发的指令
-  18   1          count_level = 100;
-  19   1      }
-  20          
-  21          void RevDataFootLedClose(void)
-  22          {
-  23   1             KEYTempVALUE = NON_VALUE;
-  24   1             TX0SendData = LedCloseData; //往下发的指令
-  25   1             count_level = 15;
-  26   1      }
-  27          
-  28          void KeyDataOnLineSend(void)
-  29          {
-  30   1             if(TimeOutDet_Check(&TimeOut_Para[0]))
-  31   1             {
-  32   2                    TimeOut_Record(&TimeOut_Para[0],OneLineTime);
-  33   2                    Uart0_ProtocolSend(0xfa,0xfb,TX0SendData);       
-  34   2                    Uart1_ProtocolSendData(0xfa,0xfb,TX1SendData);
-  35   2             }
-  36   1      }
-  37          
-  38          void Key_Handle(void)
-  39          {
-  40   1             if(SOCAPI_TouchKeyStatus&0x80) 
-  41   1             {
-  42   2                    SOCAPI_TouchKeyStatus &= 0x7f;
-  43   2                    MyKeyValue = TouchKeyScan();
-  44   2                    switch (MyKeyValue)
-  45   2                    {
-  46   3                           case TK1_VALUE:
-  47   3                                  if((KEYTempVALUE != TK1_VALUE)&&(Lock_Para_t.LockFlag)){
-  48   4                        KEYTempVALUE = TK1_VALUE;
-  49   4                                    ++ FootLedTempCnts;
-  50   4                                    if(FootLedTempCnts & 0x01){
-  51   5                                         TX0SendData = LedOpenData;
-  52   5                                         TX1SendData = ExtiLedOpenData;
-  53   5                                    }
-  54   4                                    else{
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 14:16:38 PAGE 2   
+  16   1             if(count_level == 15){
+  17   2            KEYTempVALUE = NON_VALUE;
+  18   2               TX0SendData = LedOpenData;       //往下发的指令
+  19   2               TX1SendData = ExtiLedOpenData;
+  20   2               FoolLedFlag = 1;
+  21   2            count_level = 100;
+  22   2             }
+  23   1      }
+  24          
+  25          void RevDataFootLedClose(void)
+  26          {
+  27   1             if(count_level == 100){
+  28   2             KEYTempVALUE = NON_VALUE;
+  29   2                TX0SendData = LedCloseData;     //往下发的指令
+  30   2                TX1SendData = ExtiLedCloseData;
+  31   2                FoolLedFlag = 1;
+  32   2                count_level = 15;
+  33   2             }
+  34   1      }
+  35          
+  36          void KeyDataOnLineSend(void)
+  37          {
+  38   1             if(TimeOutDet_Check(&TimeOut_Para[0]))
+  39   1             {
+  40   2                    TimeOut_Record(&TimeOut_Para[0],OneLineTime);
+  41   2                    Uart0_ProtocolSend(0xfa,0xfb,TX0SendData);       
+  42   2                    Uart1_ProtocolSendData(0xfa,0xfb,TX1SendData);
+  43   2             }
+  44   1      }
+  45          
+  46          void Key_Handle(void)
+  47          {
+  48   1             if(SOCAPI_TouchKeyStatus&0x80) 
+  49   1             {
+  50   2                    SOCAPI_TouchKeyStatus &= 0x7f;
+  51   2                    MyKeyValue = TouchKeyScan();
+  52   2                    switch (MyKeyValue)
+  53   2                    {
+  54   3                           case TK1_VALUE:
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 20:14:35 PAGE 2   
 
-  55   5                                         TX0SendData = LedCloseData;
-  56   5                                         TX1SendData = ExtiLedCloseData;
-  57   5                                    }
-  58   4                                    PwmHandle();
-  59   4                                  }
-  60   3                                  break;
-  61   3                           case TK2_VALUE:
-  62   3                                  if((KEYTempVALUE != TK2_VALUE)&&(Lock_Para_t.LockFlag)){
-  63   4                        KEYTempVALUE = TK2_VALUE;
-  64   4                                    CupHandle();
-  65   4                                  }
-  66   3                                  break;
-  67   3                           case TK3_VALUE:
-  68   3                                  if((KEYTempVALUE != TK3_VALUE)&&(Lock_Para_t.LockFlag)){
-  69   4                                    KEYTempVALUE = TK3_VALUE;
-  70   4                                    TX0SendData = HeadUpData;
-  71   4                                  }
-  72   3                                  break;
-  73   3                           case TK4_VALUE:
-  74   3                                  if((KEYTempVALUE != TK4_VALUE)&&(Lock_Para_t.LockFlag)){
-  75   4                                    KEYTempVALUE = TK4_VALUE;
-  76   4                                    TX0SendData = HomeData;
-  77   4                                  }
-  78   3                                  break;
-  79   3                           case TK5_VALUE:
-  80   3                                  if(KEYTempVALUE != TK5_VALUE){
-  81   4                                    KEYTempVALUE = TK5_VALUE;
-  82   4                                    //TX0SendData = 0x10;
-  83   4                                  }
-  84   3                                  break;
-  85   3                           case TK6_VALUE:
-  86   3                                  if((KEYTempVALUE != TK6_VALUE)&&(Lock_Para_t.LockFlag)){
-  87   4                                    KEYTempVALUE = TK6_VALUE;
-  88   4                                    TX0SendData = OpenData;
-  89   4                                  }
-  90   3                                  break;
-  91   3                           case TK7_VALUE:
-  92   3                                  if((KEYTempVALUE != TK7_VALUE)&&(Lock_Para_t.LockFlag)){
-  93   4                                    KEYTempVALUE = TK7_VALUE;
-  94   4                                    TX0SendData = CloseData;
-  95   4                                  }
-  96   3                                  break;
-  97   3                           case TK8_VALUE:
-  98   3                                  if((KEYTempVALUE != TK8_VALUE)&&(Lock_Para_t.LockFlag)){
-  99   4                                    KEYTempVALUE = TK8_VALUE;
- 100   4                                    TX0SendData = HeadDownData;
- 101   4                                  }
- 102   3                                  break;
- 103   3                                  #if 0
+  55   3                                  if((KEYTempVALUE != TK1_VALUE)&&(Lock_Para_t.LockFlag)){
+  56   4                        KEYTempVALUE = TK1_VALUE;
+  57   4                                    FoolLedFlag = 1;
+  58   4                                    ++ FootLedTempCnts;
+  59   4                                    if(FootLedTempCnts & 0x01){
+  60   5                                         if(15 == count_level){
+  61   6                             TX0SendData = LedOpenData;
+  62   6                                            TX1SendData = ExtiLedOpenData;
+  63   6                                            count_level = 100;
+  64   6                                         }
+  65   5                                    }
+  66   4                                    else{
+  67   5                                         if(100 == count_level){
+  68   6                             TX0SendData = LedCloseData;
+  69   6                                            TX1SendData = ExtiLedCloseData;
+  70   6                                            count_level = 15;
+  71   6                                         }
+  72   5                                    }
+  73   4                                  }
+  74   3                                  
+  75   3                                  break;
+  76   3                           case TK2_VALUE:
+  77   3                                  if((KEYTempVALUE != TK2_VALUE)&&(Lock_Para_t.LockFlag)){
+  78   4                        KEYTempVALUE = TK2_VALUE;
+  79   4                                    CupHandle();
+  80   4                                  }
+  81   3                                  break;
+  82   3                           case TK3_VALUE:
+  83   3                                  if((KEYTempVALUE != TK3_VALUE)&&(Lock_Para_t.LockFlag)){
+  84   4                                    KEYTempVALUE = TK3_VALUE;
+  85   4                                    TX0SendData = HeadUpData;
+  86   4                                    FoolLedFlag = 0;
+  87   4                                  }
+  88   3                                  break;
+  89   3                           case TK4_VALUE:
+  90   3                                  if((KEYTempVALUE != TK4_VALUE)&&(Lock_Para_t.LockFlag)){
+  91   4                                    KEYTempVALUE = TK4_VALUE;
+  92   4                                    TX0SendData = HomeData;
+  93   4                                    FoolLedFlag = 0;
+  94   4                                  }
+  95   3                                  break;
+  96   3                           case TK5_VALUE:
+  97   3                                  if(KEYTempVALUE != TK5_VALUE){
+  98   4                                    KEYTempVALUE = TK5_VALUE;
+  99   4                                    //TX0SendData = 0x10;
+ 100   4                                  }
+ 101   3                                  break;
+ 102   3                           case TK6_VALUE:
+ 103   3                                  if((KEYTempVALUE != TK6_VALUE)&&(Lock_Para_t.LockFlag)){
+ 104   4                                    KEYTempVALUE = TK6_VALUE;
+ 105   4                                    TX0SendData = OpenData;
+ 106   4                                    FoolLedFlag = 0;
+ 107   4                                  }
+ 108   3                                  break;
+ 109   3                           case TK7_VALUE:
+ 110   3                                  if((KEYTempVALUE != TK7_VALUE)&&(Lock_Para_t.LockFlag)){
+ 111   4                                    KEYTempVALUE = TK7_VALUE;
+ 112   4                                    TX0SendData = CloseData;
+ 113   4                                    FoolLedFlag = 0;
+ 114   4                                  }
+ 115   3                                  break;
+ 116   3                           case TK8_VALUE:
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 20:14:35 PAGE 3   
+
+ 117   3                                  if((KEYTempVALUE != TK8_VALUE)&&(Lock_Para_t.LockFlag)){
+ 118   4                                    KEYTempVALUE = TK8_VALUE;
+ 119   4                                    TX0SendData = HeadDownData;
+ 120   4                                    FoolLedFlag = 0;
+ 121   4                                  }
+ 122   3                                  break;
+ 123   3                                  #if 0
                                    case 0X0100:
                                           break;
                                    case 0X0200:
                                           break;
                                           #endif
- 109   3                           default:
- 110   3                                  if(KEYTempVALUE != NON_VALUE){
- 111   4                                    KEYTempVALUE = NON_VALUE;
- 112   4                                    TX0SendData = NoData;
- 113   4                                  }
- 114   3                                  break;
- 115   3                    }
- 116   2                    TouchKeyRestart();// 启动下一轮转换
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 14:16:38 PAGE 3   
-
- 117   2             }
- 118   1             RevDataHandle();
- 119   1             KeyDataOnLineSend();
- 120   1      }
- 121          
- 122          
- 123          
- 124          
- 125          
- 126          
+ 129   3                           default:
+ 130   3                                  if(KEYTempVALUE != NON_VALUE){
+ 131   4                                    KEYTempVALUE = NON_VALUE;
+ 132   4                                    if(!FoolLedFlag){
+ 133   5                           TX0SendData = NoData;
+ 134   5                                    }
+ 135   4                                  }
+ 136   3                                  break;
+ 137   3                    }
+ 138   2                    TouchKeyRestart();// 启动下一轮转换
+ 139   2             }
+ 140   1             if(KEYTempVALUE == NON_VALUE){
+ 141   2             RevDataHandle();
+ 142   2             }
+ 143   1             KeyDataOnLineSend();
+ 144   1      }
+ 145          
+ 146          
+ 147          
+ 148          
+ 149          
+ 150          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    572    ----
+   CODE SIZE        =    683    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     27    ----
+   DATA SIZE        =     28    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
