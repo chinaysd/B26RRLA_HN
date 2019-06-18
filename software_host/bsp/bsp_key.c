@@ -100,10 +100,12 @@ void Key_Handle(void)
 				  TX0SendData = HeadDownData;
 				}
 				break;
+				#if 0
 			case 0X0100:
 				break;
 			case 0X0200:
 				break;
+				#endif
 			default:
 				if(KEYTempVALUE != NON_VALUE){
 				  KEYTempVALUE = NON_VALUE;
