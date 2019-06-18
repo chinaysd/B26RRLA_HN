@@ -141,7 +141,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>bsp\BSP_UART.C</Filename>
+          <Filename>F:\共享文件\语音项目\git受控文件\B26RRLA_HN\software_host\pro\bsp\BSP_UART.C</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>

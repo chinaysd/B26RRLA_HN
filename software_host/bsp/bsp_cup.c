@@ -1,4 +1,5 @@
 #include "bsp_cup.h"
+#include "bsp_lock.h"
 
 MOTRO_PARA_T Motro_Para_t;
 
@@ -8,6 +9,7 @@ void Cup_Init(void)
 	P0PH  &= ~0X06;
 	P0 &= ~0X06;
 }
+
 
 void CupProcessHandle(void)
 {
@@ -30,7 +32,6 @@ void CupProcessHandle(void)
 	     Motro_Para_t.motro_count1 = CupClear0;
 		 Motro_Para_t.up_flag = CupSet1;
 		 Motro_Para_t.down_flag = CupClear0;
-		 P0 &= 0Xf9;
 	   }
 	}
 }

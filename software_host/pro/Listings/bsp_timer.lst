@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   BSP_TIMER                                                         06/14/2019 09:16:02 PAGE 1   
+C51 COMPILER V9.59.0.0   BSP_TIMER                                                         06/18/2019 13:40:06 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_TIMER
@@ -38,51 +38,51 @@ line level    source
   28   1             TR2 = 0;
   29   1             ET2 = 1;//定时器2允许
   30   1             TR2 = 1;//打开定时器2
-  31   1      }
-  32          
-  33          /**************************************************
-  34          *函数名称：void timer0/1/2() interrupt 1/3/5
-  35          *函数功能：定时器中断产生方波
-  36          *入口参数：void
-  37          *出口参数：void
-  38          **************************************************/
-  39          void timer0() interrupt 1        //250us
-  40          {
-  41   1             //static char Cnts;
-  42   1          TL0 = (65536 - 1000)%256;
-  43   1             TH0 = (65536 - 1000)/256;
-  44   1             TimeOutDet_DecHandle();
-  45   1             CupProcessHandle();
-  46   1          LockHandle();
-  47   1             #if 0
+  31   1             IP = 0X00;
+  32   1             IP1 = 0X00;
+  33   1      }
+  34          
+  35          /**************************************************
+  36          *函数名称：void timer0/1/2() interrupt 1/3/5
+  37          *函数功能：定时器中断产生方波
+  38          *入口参数：void
+  39          *出口参数：void
+  40          **************************************************/
+  41          void timer0() interrupt 1        //250us
+  42          {
+  43   1             //static char Cnts;
+  44   1          TL0 = (65536 - 1000)%256;
+  45   1             TH0 = (65536 - 1000)/256;
+  46   1             TimeOutDet_DecHandle();
+  47   1             CupProcessHandle();
+  48   1          LockHandle();
+  49   1             #if 0
                      ++ Cnts;
                      if(Cnts & 0x01)
                      {
                             LockRedSet(1);
                      }
+C51 COMPILER V9.59.0.0   BSP_TIMER                                                         06/18/2019 13:40:06 PAGE 2   
+
                      else
                      {
-C51 COMPILER V9.59.0.0   BSP_TIMER                                                         06/14/2019 09:16:02 PAGE 2   
-
                             LockRedSet(0);
                      }
                      #endif
-  58   1      }
-  59          
-  60          void timer1() interrupt 3
-  61          {
-  62   1             
-  63   1      }
-  64          
-  65          void Timer2Int(void) interrupt 5       //400US
-  66          {      
-  67   1             TF2 = 0;   //溢出清零
-  68   1             ErrorPwmProcessHandle();
-  69   1      }
-  70          
-  71          
-  72          
-  73          
+  60   1      }
+  61          
+  62          void timer1() interrupt 3
+  63          {
+  64   1             
+  65   1      }
+  66          
+  67          void Timer2Int(void) interrupt 5       //400US
+  68          {      
+  69   1             TF2 = 0;   //溢出清零
+  70   1             #if 1 
+  71   1             ErrorPwmProcessHandle();
+  72   1             #endif
+  73   1      }
   74          
   75          
   76          
@@ -96,10 +96,14 @@ line level    source
   84          
   85          
   86          
+  87          
+  88          
+  89          
+  90          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    184    ----
+   CODE SIZE        =    188    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

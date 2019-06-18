@@ -10,13 +10,13 @@
 #define CupClear0      0
 #define CupSet1        1
 
-#define CupTimeCnts    1500
+#define CupTimeCnts    800
 
 typedef struct
 {
 	char MOTRO_FLAG;
-	char motro_count0;
-    char motro_count1;
+	unsigned int motro_count0;
+    unsigned int motro_count1;
 	char up_flag;
 	char down_flag;
 }

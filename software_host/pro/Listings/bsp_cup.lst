@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   BSP_CUP                                                           06/13/2019 21:12:52 PAGE 1   
+C51 COMPILER V9.59.0.0   BSP_CUP                                                           06/18/2019 13:23:50 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_CUP
@@ -9,68 +9,68 @@ COMPILER INVOKED BY: E:\MDK\C51\BIN\C51.EXE ..\bsp\bsp_cup.c OPTIMIZE(8,SPEED) B
 line level    source
 
    1          #include "bsp_cup.h"
-   2          
-   3          MOTRO_PARA_T Motro_Para_t;
-   4          
-   5          void Cup_Init(void)
-   6          {
-   7   1             P0CON |= 0X06;
-   8   1             P0PH  &= ~0X06;
-   9   1             P0 &= ~0X06;
-  10   1      }
-  11          
-  12          void CupProcessHandle(void)
-  13          {
-  14   1             if(Motro_Para_t.up_flag)
-  15   1             {
-  16   2                Motro_Para_t.motro_count0 ++;
-  17   2                if(Motro_Para_t.motro_count0 > CupTimeCnts)
-  18   2                {
-  19   3                   Motro_Para_t.motro_count0 = CupClear0;
-  20   3                      Motro_Para_t.up_flag = CupClear0;
-  21   3                      Motro_Para_t.down_flag = CupSet1;
-  22   3                      P0 &= 0Xf9;
-  23   3                }
-  24   2             }
-  25   1             if(Motro_Para_t.down_flag)
-  26   1             {
-  27   2                Motro_Para_t.motro_count1 ++;
-  28   2                if(Motro_Para_t.motro_count1 > CupTimeCnts)
-  29   2                {
-  30   3                  Motro_Para_t.motro_count1 = CupClear0;
-  31   3                     Motro_Para_t.up_flag = CupSet1;
-  32   3                     Motro_Para_t.down_flag = CupClear0;
-  33   3                     P0 &= 0Xf9;
-  34   3                }
-  35   2             }
-  36   1      }
-  37          
-  38          void CupHandle(void)
-  39          {
-  40   1             if(Motro_Para_t.MOTRO_FLAG == CupFalse)
-  41   1             {
-  42   2               Motro_Para_t.MOTRO_FLAG = CupTrue;
-  43   2               P0 &= 0Xf9;
-  44   2               P0 |= 1 << 1;
-  45   2               Motro_Para_t.motro_count0 = CupClear0;
-  46   2               Motro_Para_t.motro_count1 = CupClear0;
-  47   2               Motro_Para_t.up_flag = CupSet1;
-  48   2               Motro_Para_t.down_flag = CupClear0;
-  49   2             }
-  50   1             else
-  51   1             {
-  52   2               Motro_Para_t.MOTRO_FLAG = CupFalse;
-  53   2               P0 &= 0Xf9;
-  54   2               P0 |= 1 << 2;
-C51 COMPILER V9.59.0.0   BSP_CUP                                                           06/13/2019 21:12:52 PAGE 2   
+   2          #include "bsp_lock.h"
+   3          
+   4          MOTRO_PARA_T Motro_Para_t;
+   5          
+   6          void Cup_Init(void)
+   7          {
+   8   1             P0CON |= 0X06;
+   9   1             P0PH  &= ~0X06;
+  10   1             P0 &= ~0X06;
+  11   1      }
+  12          
+  13          
+  14          void CupProcessHandle(void)
+  15          {
+  16   1             if(Motro_Para_t.up_flag)
+  17   1             {
+  18   2                Motro_Para_t.motro_count0 ++;
+  19   2                if(Motro_Para_t.motro_count0 > CupTimeCnts)
+  20   2                {
+  21   3                   Motro_Para_t.motro_count0 = CupClear0;
+  22   3                      Motro_Para_t.up_flag = CupClear0;
+  23   3                      Motro_Para_t.down_flag = CupSet1;
+  24   3                      P0 &= 0Xf9;
+  25   3                }
+  26   2             }
+  27   1             if(Motro_Para_t.down_flag)
+  28   1             {
+  29   2                Motro_Para_t.motro_count1 ++;
+  30   2                if(Motro_Para_t.motro_count1 > CupTimeCnts)
+  31   2                {
+  32   3                  Motro_Para_t.motro_count1 = CupClear0;
+  33   3                     Motro_Para_t.up_flag = CupSet1;
+  34   3                     Motro_Para_t.down_flag = CupClear0;
+  35   3                }
+  36   2             }
+  37   1      }
+  38          
+  39          void CupHandle(void)
+  40          {
+  41   1             if(Motro_Para_t.MOTRO_FLAG == CupFalse)
+  42   1             {
+  43   2               Motro_Para_t.MOTRO_FLAG = CupTrue;
+  44   2               P0 &= 0Xf9;
+  45   2               P0 |= 1 << 1;
+  46   2               Motro_Para_t.motro_count0 = CupClear0;
+  47   2               Motro_Para_t.motro_count1 = CupClear0;
+  48   2               Motro_Para_t.up_flag = CupSet1;
+  49   2               Motro_Para_t.down_flag = CupClear0;
+  50   2             }
+  51   1             else
+  52   1             {
+  53   2               Motro_Para_t.MOTRO_FLAG = CupFalse;
+  54   2               P0 &= 0Xf9;
+C51 COMPILER V9.59.0.0   BSP_CUP                                                           06/18/2019 13:23:50 PAGE 2   
 
-  55   2               Motro_Para_t.motro_count0 = CupClear0;
-  56   2               Motro_Para_t.motro_count1 = CupClear0;
-  57   2               Motro_Para_t.up_flag = CupClear0;
-  58   2               Motro_Para_t.down_flag = CupSet1;
-  59   2             }
-  60   1      }
-  61          
+  55   2               P0 |= 1 << 2;
+  56   2               Motro_Para_t.motro_count0 = CupClear0;
+  57   2               Motro_Para_t.motro_count1 = CupClear0;
+  58   2               Motro_Para_t.up_flag = CupClear0;
+  59   2               Motro_Para_t.down_flag = CupSet1;
+  60   2             }
+  61   1      }
   62          
   63          
   64          
@@ -78,14 +78,15 @@ line level    source
   66          
   67          
   68          
+  69          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    128    ----
+   CODE SIZE        =    131    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      5    ----
+   DATA SIZE        =      7    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   SYSTEM                                                            06/14/2019 09:16:01 PAGE 1   
+C51 COMPILER V9.59.0.0   SYSTEM                                                            06/18/2019 13:35:08 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE SYSTEM
@@ -11,33 +11,48 @@ line level    source
    1          #include "system.h"
    2          
    3          
-   4          void System_Init(void)
+   4          void TK_Init(void)//触摸按键设置强推挽输出
    5          {
-   6   1             WDT_DISABLE();
-   7   1             TimeOutDet_Init();
-   8   1             LockRedInit();
-   9   1             Cup_Init();
-  10   1             Pwm_Init();
-  11   1             Timer_Init();
-  12   1             Uart_Init(Freq_2M,Baud_9600);
-  13   1             Uart1_Init(Freq_2M,Baud_9600);
-  14   1             TouchKeyInit();
-  15   1             WDT_ENABLE();
-  16   1             Interrupt_Handle(Interrupt_Enable);
-  17   1      }
-  18          
-  19          void System_Handle(void)
-  20          {
-  21   1          WDT_Feel();
-  22   1             Key_Handle();
-  23   1      }
-  24          
-  25          
-  26          
+   6   1             P0CON |= 0X31;
+   7   1             P0PH  &= ~0X31;
+   8   1             P0 = 0X31;
+   9   1             P2CON |= 0XD3;
+  10   1             P2PH  &= ~0XD3;
+  11   1             P2 = 0XD3;
+  12   1             P1CON |= 0X30;
+  13   1             P1PH  &= ~0X30;
+  14   1             P1 = 0X30;
+  15   1      }
+  16          
+  17          
+  18          void System_Init(void)
+  19          {
+  20   1             WDT_DISABLE();
+  21   1             TimeOutDet_Init();
+  22   1             LockRedInit();
+  23   1             Cup_Init();
+  24   1             TK_Init();
+  25   1             Pwm_Init();
+  26   1             Timer_Init();
+  27   1             Uart_Init(Freq_2M,Baud_9600);
+  28   1             Uart1_Init(Freq_2M,Baud_9600);
+  29   1             TouchKeyInit();
+  30   1             WDT_ENABLE();
+  31   1             Interrupt_Handle(Interrupt_Enable);
+  32   1      }
+  33          
+  34          void System_Handle(void)
+  35          {
+  36   1          WDT_Feel();
+  37   1             Key_Handle();
+  38   1      }
+  39          
+  40          
+  41          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     53    ----
+   CODE SIZE        =     84    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

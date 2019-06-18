@@ -1,0 +1,1 @@
+"..\bsp\bsp_cup.c" OPTIMIZE (8,SPEED) BROWSE INCDIR(..\bsp;..\lib;..\TimeOut;..\user) DEBUG OBJECTEXTEND PRINT(.\Listings\bsp_cup.lst) TABS (7) OBJECT(.\Objects\bsp_cup.obj)

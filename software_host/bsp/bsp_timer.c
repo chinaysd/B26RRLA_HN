@@ -28,6 +28,8 @@ void Timer_Init(void)
 	TR2 = 0;
 	ET2 = 1;//定时器2允许
 	TR2 = 1;//打开定时器2
+	IP = 0X00;
+	IP1 = 0X00;
 }
 
 /**************************************************
@@ -65,7 +67,9 @@ void timer1() interrupt 3
 void Timer2Int(void) interrupt 5       //400US
 {	
 	TF2 = 0;   //溢出清零
+	#if 1 
 	ErrorPwmProcessHandle();
+	#endif
 }
 
 

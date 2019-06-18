@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/14/2019 09:16:02 PAGE 1   
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 13:40:06 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE BSP_KEY
@@ -62,7 +62,7 @@ line level    source
   52   5                                         TX1SendData = ExtiLedOpenData;
   53   5                                    }
   54   4                                    else{
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/14/2019 09:16:02 PAGE 2   
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 13:40:06 PAGE 2   
 
   55   5                                         TX0SendData = LedCloseData;
   56   5                                         TX1SendData = ExtiLedCloseData;
@@ -126,7 +126,7 @@ line level    source
  114   2                    TouchKeyRestart();// 启动下一轮转换
  115   2             }
  116   1             RevDataHandle();
-C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/14/2019 09:16:02 PAGE 3   
+C51 COMPILER V9.59.0.0   BSP_KEY                                                           06/18/2019 13:40:06 PAGE 3   
 
  117   1             KeyDataOnLineSend();
  118   1      }
